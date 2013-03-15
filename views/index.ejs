@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/javascripts/socket.io.js" ></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+  <div id="enter-nickname">
+     <h2>What's your name soldier?</h2>
+     <input type="text" value="Cowboy" id="nickname" />
+     <input type="submit" class="btn btn-primary" id="enter-name" />
+  </div>
+  <div id="lobby">
+     <div class="chat-window">
+     </div>
+     <form action="javascript://">
+        <input type="text" class="chat-input" />
+        <input type="submit" class="btn btn-primary" value="Say It!" />
+     </form>
+  </div>
+  <script type="text/javascript">
+     var socket = io.connect('http://localhost');
+     $('#lobby').hide();
+     socket.on('msg', function(msg){
+        $('.chat-window').append($('<p>'+ msg +'</p>').addClass('message'));
+     });
+
+     socket.on('deal',function(card){
+
+     });
+
+     $('form').submit(function(){
+        var message = $('.chat-input').val();
+        if (message.length !== 0){
+           socket.emit('msg', message);
+        }
+     });
+
+     socket.on('ready', function(){
+        $('#enter-nickname').hide();
+        $('#lobby').show();
+     });
+
+     $('#enter-name').click(function(){
+        var name = $('#nickname').val();
+        if (name.length == 0)
+        {
+           alert('Now look what you did, you made me bring up this annoying alert. Try putting in a sensible name!');
+        }
+        else
+        {
+           socket.emit('set nickname', name);
+        }
+     });
+  </script>
+  </body>
+</html>
