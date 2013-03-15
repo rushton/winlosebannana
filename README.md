@@ -1,4 +1,4 @@
-winlosebannana
+Win, Lose, Bannana
 ==============
 
 A web based implementation of win lose bannana
