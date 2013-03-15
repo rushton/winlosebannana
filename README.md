@@ -3,10 +3,7 @@ Win, Lose, Bannana
 
 A web based implementation of win lose bannana
 
-Win, Lose, Bannana
-==================
-
-### What is Win, Lose, Bannana
+### What is Win, Lose, Bannana?
 
 Win, Lose, Bannana is originally a card game created by Asmadi games in which there are three cards and three players. The game consists of:
 
