@@ -14,12 +14,23 @@ function init(app)
            var roomName = 'room' + currentRoomId;
            socket.join(roomName);
            socket.set('room', roomName);
+           io.sockets.in(roomName).emit('new player joined', {id: socket.id, handle: nickname});
+           var currentPlayers = [];
+           io.sockets.clients(roomName).forEach(function(socket){
+              // @todo replace with official method, kind of hackish right now
+              currentPlayers.push({handle:socket.store.data.nickname, id:socket.id});
+           });
+           socket.emit('players list',currentPlayers);
            numPlayers++;
+           console.log("numplayers: " + numPlayers);
            if (numPlayers >= 3)
            {
               var cards = shuffle(['Win', 'Lose', 'Bannana']);
               io.sockets.clients(roomName).forEach(function(socket,i){
                 socket.emit('deal', cards[i]); 
+                if (cards[i] === 'Win'){
+                   io.sockets.in(roomName).emit('winner', {id: socket.id, handle: socket.store.data.nickname});
+                }
               });
               numPlayers = 0;
               currentRoomId++;
@@ -33,7 +44,8 @@ function init(app)
         socket.get('nickname', function(err,nickname){
            socket.get('room', function(err,roomname){
               console.log(msg);
-              io.sockets.in(roomname).emit('msg',util.format("Room:%s %s : %s", roomname, nickname, msg));
+              var msgPackage = {handle: nickname, message: msg};
+              io.sockets.in(roomname).emit('msg',msgPackage);
            });
         })
      });
